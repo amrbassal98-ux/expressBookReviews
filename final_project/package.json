@@ -1,20 +1,26 @@
 {
-  "name": "bookshop",
+  "name": "decoupled-express-book-reviews",
   "version": "1.0.1",
-  "description": "",
+  "description": "Enterprise-grade Express book reviews API",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.13.5",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
+    "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.3",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.11"
   }
 }

@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.example
+README.md
+final_project/node_modules
+final_project/package-lock.json

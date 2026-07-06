@@ -1,22 +1,19 @@
 const express = require('express');
+const { validate, registerSchema } = require('../middleware/validate.js');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
-public_users.post("/register", (req,res) => {
+public_users.post("/register", validate(registerSchema), (req,res) => {
   const {username, password} = req.body;
-  if (username && password) {
-    if (!isValid(username)) {
-      return res.status(409).json({message: "User already exists!"});
-    } else {
-      users.push({"username": username, "password": password});
-      return res.status(200).json({message: `The user ${username} was added successfully`});
-    };
+  if (!isValid(username)) {
+    return res.status(409).json({message: "User already exists!"});
   } else {
-    return res.status(400).json({message: "Username and Password required!"});
-  };
+    users.push({"username": username, "password": password});
+    return res.status(200).json({message: `The user ${username} was added successfully`});
+  }
 });
 
 // Get the book list available in the shop
@@ -61,7 +58,7 @@ public_users.get('/author/:author',function (req, res) {
       if (books[key].author.toLowerCase() === author.toLocaleLowerCase()) {
         filteredBooks.push(books[key]);}
     });
-    if (filteredBooks > 0) {
+    if (filteredBooks.length > 0) {
       resolve (filteredBooks);
     } else {
       reject ("No books found for this author");

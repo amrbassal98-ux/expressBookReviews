@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const { validate, loginSchema } = require('../middleware/validate.js');
 let books = require("./booksdb.js");
 const regd_users = express.Router();
 
@@ -17,18 +18,14 @@ const authenticatedUser = (username,password)=>{
 };
 
 //only registered users can login
-regd_users.post("/login", (req,res) => {
+regd_users.post("/login", validate(loginSchema), (req,res) => {
   const {username, password} = req.body;
-  if (!username || !password) {
-    return res.status(400).json({message: "Username and Password are required!"});
+  if (!authenticatedUser (username, password)) {
+    return res.status(404).json({message: "Invalid login. Please check Username and Password!"});
   } else {
-    if (!authenticatedUser (username, password)) {
-      return res.status(404).json({message: "Invalid login. Please check Username and Password!"});
-    } else {
-      let accessToken = jwt.sign({data: password}, 'access', {expiresIn: 60*60});
-      req.session.authorization = {accessToken, username};
-      return res.status(200).send("User successfully logged in!");
-    };
+    let accessToken = jwt.sign({data: password}, process.env.JWT_SECRET || 'access', {expiresIn: parseInt(process.env.JWT_EXPIRES_IN) || 3600});
+    req.session.authorization = {accessToken, username};
+    return res.status(200).send("User successfully logged in!");
   }
 });
 
